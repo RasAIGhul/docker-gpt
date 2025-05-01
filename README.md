@@ -30,7 +30,7 @@ A web application that lets you deploy Docker containers using natural language 
 
 1. Clone the repository:
    ```
-   git clone https://github.com/yourusername/docker-gpt.git
+   git clone https://github.com/RasAIGhul/docker-gpt.git
    cd docker-gpt
    ```
 
