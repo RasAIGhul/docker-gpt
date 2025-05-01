@@ -55,7 +55,7 @@ A web application that lets you deploy Docker containers using natural language 
 
 ### Running the application
 
-#### Option 1: Using Docker Compose (Recommended)
+#### Option 1: Using Docker Compose (Recommended for Development)
 
 1. Make sure Docker is installed and running on your system
 
@@ -87,6 +87,65 @@ A web application that lets you deploy Docker containers using natural language 
    ```
 
 3. Open your browser and navigate to `http://localhost:3000`
+
+#### Option 3: Using Docker Hub Images (Recommended for Deployment)
+
+The application is available as pre-built Docker images on Docker Hub, which means you don't need to build them yourself:
+
+1. Clone this repository (for the configuration files only):
+   ```
+   git clone https://github.com/RasAIGhul/docker-gpt.git
+   cd docker-gpt
+   ```
+
+2. Create a `.env` file in the `backend` directory with your OpenAI API key:
+   ```
+   cd backend
+   echo "OPENAI_API_KEY=your_openai_api_key_here" > .env
+   cd ..
+   ```
+
+3. Create a simple `docker-compose.yml` file or use the one in the repository:
+   ```yaml
+   version: '3.8'
+   
+   services:
+     backend:
+       image: zcondeelis/docker-gpt-backend:latest
+       ports:
+         - "8000:8000"
+       volumes:
+         - /var/run/docker.sock:/var/run/docker.sock
+         - $HOME/.docker/run:$HOME/.docker/run
+         - ./backend/.env:/app/.env
+       environment:
+         - DOCKER_HOST=unix:///var/run/docker.sock
+       restart: always
+   
+     frontend:
+       image: zcondeelis/docker-gpt-frontend:latest
+       ports:
+         - "3000:3000"
+       environment:
+         - REACT_APP_API_URL=http://localhost:8000/api/v1
+       depends_on:
+         - backend
+       restart: always
+   ```
+
+4. Start the application with a single command (no building needed):
+   ```
+   docker-compose up
+   ```
+
+5. Open your browser and navigate to `http://localhost:3000`
+
+6. To stop the application, press `Ctrl+C` in the terminal or run:
+   ```
+   docker-compose down
+   ```
+
+**Note**: This approach uses the same microservice architecture as the local build but leverages pre-built images from Docker Hub for convenience.
 
 ## Example Prompts
 
